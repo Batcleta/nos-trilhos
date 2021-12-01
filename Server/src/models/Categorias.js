@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       as: "rendavariavel",
       onDelete: "cascade",
       foreignKey: "categoriaId",
-      through: "categoriaDaRendaFixa",
+      through: "categoriaDaRendaVariável",
     });
   };
 

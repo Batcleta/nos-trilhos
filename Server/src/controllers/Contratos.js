@@ -47,7 +47,25 @@ module.exports = {
   async findAll(req, res) {
     Contratos.findAll({
       include: ["categoria", "contas"],
-    }).then((resp) => res.json(resp));
+    }).then((resp) => {
+      const bilolagem = resp.map((item) => {
+        const conta = item.contas.filter((item) => {
+          const date = new Date("2021-12-10").getMonth();
+          const lala = new Date(item.vencimentoDaConta).getMonth();
+          return lala === date && item.statusDaConta === true;
+        });
+
+        return {
+          descricaoDoContrato: item.descricaoDoContrato,
+          userId: item.userId,
+          mesesDeFidelidade: item.mesesDeFidelidade,
+          categoria: item.categoria.map((item) => item.nomeCategoria),
+          conta: conta,
+        };
+      });
+
+      res.json(bilolagem);
+    });
   },
 
   async delete(req, res) {
