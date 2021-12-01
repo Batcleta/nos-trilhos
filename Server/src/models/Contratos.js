@@ -1,10 +1,17 @@
 module.exports = (sequelize, DataTypes) => {
   const Contratos = sequelize.define("Contratos", {
+    uuid: {
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      unique: true,
+    },
     inicioDoContrato: {
       type: DataTypes.DATE,
       allowNull: true,
     },
-    vencimentoDoContrato: {
+    VencimentoDaFatura: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

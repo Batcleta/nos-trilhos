@@ -1,7 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
   const Categorias = sequelize.define("Categorias", {
+    uuid: {
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      unique: true,
+    },
     tipoCategoria: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     nomeCategoria: {
