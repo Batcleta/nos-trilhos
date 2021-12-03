@@ -22,17 +22,17 @@ module.exports = {
         const criandoContas = CriarContas(
           resp.valorDoContrato,
           resp.mesesDeFidelidade,
-          resp.vencimentoDoContrato,
+          resp.VencimentoDaFatura,
           resp.inicioDoContrato
         );
 
         const promisse = criandoContas.map(async (element) => {
-          await Contas.create({ ...element, contratoId: resp.id });
+          await Contas.create({ ...element, contratoUuid: resp.uuid });
         });
 
         await Promise.all(promisse);
 
-        const findContrato = await Contratos.findByPk(resp.id, {
+        const findContrato = await Contratos.findByPk(resp.uuid, {
           include: ["contas", "categoria"],
         });
 
@@ -44,28 +44,37 @@ module.exports = {
       .catch((err) => res.json({ error: err.message }));
   },
 
+  // async findAll(req, res) {
+  //   Contratos.findAll({
+  //     include: ["categoria", "contas"],
+  //   }).then((resp) => {
+  //     const bilolagem = resp.map((item) => {
+  //       const conta = item.contas.filter((item) => {
+  //         const date = new Date("2021-12-10").getMonth();
+  //         const lala = new Date(item.vencimentoDaConta).getMonth();
+  //         return lala === date && item.statusDaConta === true;
+  //       });
+
+  //       return {
+  //         contaDoMes: {
+  //           descricaoDoContrato: item.descricaoDoContrato,
+  //           userId: item.userId,
+  //           mesesDeFidelidade: item.mesesDeFidelidade,
+  //           categoria: item.categoria.map((item) => item.nomeCategoria),
+  //           conta: conta,
+  //         },
+  //         contrato: { resp },
+  //       };
+  //     });
+
+  //     res.json(bilolagem);
+  //   });
+  // },
+
   async findAll(req, res) {
     Contratos.findAll({
       include: ["categoria", "contas"],
-    }).then((resp) => {
-      const bilolagem = resp.map((item) => {
-        const conta = item.contas.filter((item) => {
-          const date = new Date("2021-12-10").getMonth();
-          const lala = new Date(item.vencimentoDaConta).getMonth();
-          return lala === date && item.statusDaConta === true;
-        });
-
-        return {
-          descricaoDoContrato: item.descricaoDoContrato,
-          userId: item.userId,
-          mesesDeFidelidade: item.mesesDeFidelidade,
-          categoria: item.categoria.map((item) => item.nomeCategoria),
-          conta: conta,
-        };
-      });
-
-      res.json(bilolagem);
-    });
+    }).then((resp) => res.json(resp));
   },
 
   async delete(req, res) {

@@ -28,11 +28,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     statusDoContrato: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     categoriaContrato: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     origem: {
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
     Contratos.hasMany(Contas, {
       as: "contas",
       onDelete: "cascade",
-      foreignKey: "contratoId",
+      foreignKey: "contratoUuid",
     });
   };
 

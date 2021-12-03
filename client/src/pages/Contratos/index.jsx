@@ -6,6 +6,17 @@ import Api from "../../helpers/BaseApi";
 function Contratos() {
   const { register, handleSubmit } = useForm();
 
+  const [contratos, setContratos] = useState([]);
+  console.log(contratos);
+
+  useEffect(() => {
+    Api.get("/contratos", {
+      headers: {
+        apiKey: localStorage.getItem("apiKey"),
+      },
+    }).then((resp) => setContratos(resp.data));
+  }, []);
+
   const onSubmit = () => {};
   return (
     <div>

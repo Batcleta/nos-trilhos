@@ -33,16 +33,12 @@ function AddContrato() {
       origem: "normal",
     };
 
-    Api.post(
-      "/contratos",
-      {
-        headers: {
-          apiKey:
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNoYXJrYmxhY2siLCJpZCI6MSwiYXV0aG9yaXphdGlvbiI6IjEiLCJpYXQiOjE2MzcwMjMzNTV9.KhvkCSxqe8q51SaBLXUeXjNtlHERD2jtnSCmhmAzdjM",
-        },
+    Api.post("/contratos", formData, {
+      headers: {
+        apiKey: localStorage.getItem("apiKey"),
       },
-      formData
-    ).then((resp) => navigate("/contratos"));
+    }).then(console.log);
+    // }).then((resp) => navigate("/contratos"));
   };
 
   return (
