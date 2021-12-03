@@ -19,6 +19,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    reservaMinima: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
+    gastoMaximo: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
   });
 
   Categorias.associate = ({ Compras, Contratos, RendaFixa, RendaVariavel }) => {

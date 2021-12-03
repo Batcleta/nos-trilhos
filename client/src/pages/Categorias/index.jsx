@@ -9,6 +9,8 @@ function Categorias() {
   const [search, setSearch] = useState();
   const [categorias, setCategorias] = useState([]);
 
+  console.log(categorias);
+
   useEffect(() => {
     Api.get("categorias", {
       headers: {
@@ -44,17 +46,34 @@ function Categorias() {
         <Link to="/addCategoria">Nova categoria</Link>
       </div>
       <div>
+        <div
+          style={{
+            display: "grid",
+            gap: "1rem",
+            gridTemplateColumns: "repeat(6, 1fr)",
+            fontWeight: "bold",
+          }}
+        >
+          <div>Nome da categoria</div>
+          <div>Tipo da categoria</div>
+          <div>Reserva mínima</div>
+          <div>Gasto maximo </div>
+          <div>Status</div>
+        </div>
+
         {categorias.map((item, key) => (
           <div
             key={key}
             style={{
               display: "grid",
               gap: "1rem",
-              gridTemplateColumns: "1fr 1fr 1fr 1fr",
+              gridTemplateColumns: "repeat(6, 1fr)",
             }}
           >
             <div>{item.nomeCategoria}</div>
             <div>{item.tipoCategoria}</div>
+            <div>{item.reservaMinima ? item.reservaMinima : "---"}</div>
+            <div>{item.gastoMaximo ? item.gastoMaximo : "---"}</div>
             <div>{item.status === true ? "Ativa" : "Inativa"}</div>
             <div style={{ gap: "1rem", display: "flex " }}>
               <Link to={`/categoria/${item.uuid}`}>

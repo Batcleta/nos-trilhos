@@ -11,7 +11,8 @@ module.exports = {
       .then((hash) => Users.create({ ...req.body, password: hash }))
       .then((resp) => {
         res.json(resp);
-      });
+      })
+      .catch((err) => res.json({ erro: err }));
   },
 
   async findAll(req, res) {

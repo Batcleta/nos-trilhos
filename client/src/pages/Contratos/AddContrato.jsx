@@ -43,8 +43,7 @@ function AddContrato() {
         },
       },
       formData
-    );
-    // .then(resp => navigate('/contratos') );
+    ).then((resp) => navigate("/contratos"));
   };
 
   return (
