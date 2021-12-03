@@ -16,7 +16,6 @@ import { useAuth } from "./helpers/MainContext";
 function App() {
   const { authState, setAuthState } = useAuth();
   const navigate = useNavigate();
-  const params = useParams();
 
   useEffect(() => {
     if (localStorage.getItem("apiKey")) {

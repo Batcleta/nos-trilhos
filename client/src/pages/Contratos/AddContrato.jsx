@@ -16,8 +16,7 @@ function AddContrato() {
   useEffect(() => {
     Api.get("categorias", {
       headers: {
-        apiKey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNoYXJrYmxhY2siLCJpZCI6MSwiYXV0aG9yaXphdGlvbiI6IjEiLCJpYXQiOjE2MzcwMjMzNTV9.KhvkCSxqe8q51SaBLXUeXjNtlHERD2jtnSCmhmAzdjM",
+        apiKey: localStorage.getItem("apiKey"),
       },
     }).then((resp) => setCategorias(resp.data));
   }, []);

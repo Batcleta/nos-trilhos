@@ -20,7 +20,11 @@ function AddCategorias() {
       reservaMinima: data.reservaMinima || null,
       gastoMaximo: data.gastoMaximo || null,
     };
-    Api.post("/categorias", formData)
+    Api.post("/categorias", formData, {
+      headers: {
+        apiKey: localStorage.getItem("apiKey"),
+      },
+    })
       .then((resp) => console.log(resp))
       .then(navigate("/categorias"));
   };

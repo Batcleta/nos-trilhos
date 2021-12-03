@@ -5,10 +5,10 @@ const { validateToken } = require("../middlewares/AuthMiddleware");
 // Controllers
 const CategoriaController = require("../controllers/Categorias");
 
-router.post("/", CategoriaController.store);
+router.post("/", validateToken, CategoriaController.store);
 router.get("/", validateToken, CategoriaController.findAll);
-router.get("/:uuid", CategoriaController.findOne);
-router.put("/:uuid", CategoriaController.update);
-router.delete("/delete/:uuid", CategoriaController.delete);
+router.get("/:uuid", validateToken, CategoriaController.findOne);
+router.put("/:uuid", validateToken, CategoriaController.update);
+router.delete("/delete/:uuid", validateToken, CategoriaController.delete);
 
 module.exports = router;

@@ -5,17 +5,13 @@ import Api from "../../helpers/BaseApi";
 
 function Categorias() {
   const { register, handleSubmit } = useForm();
-
   const [search, setSearch] = useState();
   const [categorias, setCategorias] = useState([]);
-
-  console.log(categorias);
 
   useEffect(() => {
     Api.get("categorias", {
       headers: {
-        apiKey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNoYXJrYmxhY2siLCJpZCI6MSwiYXV0aG9yaXphdGlvbiI6IjEiLCJpYXQiOjE2MzcwMjMzNTV9.KhvkCSxqe8q51SaBLXUeXjNtlHERD2jtnSCmhmAzdjM",
+        apiKey: localStorage.getItem("apiKey"),
       },
       params: {
         search: search,
@@ -27,7 +23,11 @@ function Categorias() {
 
   const onDelete = (uuid, e) => {
     e.preventDefault();
-    Api.delete(`/categorias/delete/${uuid}`).then((resp) => {
+    Api.delete(`/categorias/delete/${uuid}`, {
+      headers: {
+        apiKey: localStorage.getItem("apiKey"),
+      },
+    }).then((resp) => {
       const novas = categorias.filter((item) => item.uuid !== uuid);
       setCategorias(novas);
     });
@@ -72,8 +72,8 @@ function Categorias() {
           >
             <div>{item.nomeCategoria}</div>
             <div>{item.tipoCategoria}</div>
-            <div>{item.reservaMinima ? item.reservaMinima : "---"}</div>
-            <div>{item.gastoMaximo ? item.gastoMaximo : "---"}</div>
+            <div>{item.reservaMinima ? item.reservaMinima : "--"}</div>
+            <div>{item.gastoMaximo ? item.gastoMaximo : "--"}</div>
             <div>{item.status === true ? "Ativa" : "Inativa"}</div>
             <div style={{ gap: "1rem", display: "flex " }}>
               <Link to={`/categoria/${item.uuid}`}>

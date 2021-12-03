@@ -12,7 +12,11 @@ function CategoriaId() {
   const { register, handleSubmit } = useForm();
 
   useEffect(() => {
-    Api.get(`/categorias/${uuid}`).then((resp) => {
+    Api.get(`/categorias/${uuid}`, {
+      headers: {
+        apiKey: localStorage.getItem("apiKey"),
+      },
+    }).then((resp) => {
       setCategoria(resp.data);
     });
   }, []);
@@ -25,9 +29,11 @@ function CategoriaId() {
       gastoMaximo: data.gastoMaximo || null,
     };
 
-    Api.put(`/categorias/${uuid}`, formData).then((resp) => {
-      navigate("/categorias");
-    });
+    Api.put(`/categorias/${uuid}`, formData, {
+      headers: {
+        apiKey: localStorage.getItem("apiKey"),
+      },
+    }).then((resp) => navigate("/categorias"));
   };
 
   return (
