@@ -7,6 +7,7 @@ const ContratosController = require("../controllers/Contratos");
 
 router.post("/", validateToken, ContratosController.store);
 router.get("/", validateToken, ContratosController.findAll);
+router.get("/:uuid", validateToken, ContratosController.findOne);
 router.delete("/delete/:id", validateToken, ContratosController.delete);
 
 module.exports = router;

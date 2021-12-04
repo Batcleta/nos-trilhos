@@ -121,9 +121,6 @@ function AddContrato() {
                 </option>
               ))}
             </select>
-            {/* {errors.valorDoContrato && (
-            <span>Informe o valor do seu contrato</span>
-          )} */}
           </FormGroup>
 
           <button type="submit">Enviar</button>
@@ -132,7 +129,7 @@ function AddContrato() {
         "Loading..."
       )}
 
-      <Link to="/categorias">voltar</Link>
+      <Link to="/contratos">voltar</Link>
     </div>
   );
 }

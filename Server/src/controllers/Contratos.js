@@ -77,6 +77,14 @@ module.exports = {
     }).then((resp) => res.json(resp));
   },
 
+  async findOne(req, res) {
+    const { uuid } = req.params;
+
+    Contratos.findByPk(uuid, { include: ["categoria", "contas"] }).then(
+      (resp) => res.json(resp)
+    );
+  },
+
   async delete(req, res) {
     const { id } = req.params;
 

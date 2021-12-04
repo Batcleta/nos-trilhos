@@ -25,7 +25,7 @@ function AddCategorias() {
         apiKey: localStorage.getItem("apiKey"),
       },
     })
-      .then((resp) => console.log(resp))
+      // .then((resp) => console.log(resp))
       .then(navigate("/categorias"));
   };
 

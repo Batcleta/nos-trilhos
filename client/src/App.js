@@ -7,6 +7,7 @@ import Categorias from "./pages/Categorias";
 import CategoriaId from "./pages/Categorias/CategoriaId";
 import Contratos from "./pages/Contratos";
 import AddContrato from "./pages/Contratos/AddContrato";
+import ContratoId from "./pages/Contratos/ContratoId";
 import LoginPage from "./pages/Login";
 import NovoUsuário from "./pages/NovoUsuário";
 // helpers
@@ -73,6 +74,7 @@ function App() {
 
         {/* Contratos */}
         <Route path="/contratos" element={<Contratos />} />
+        <Route path="/contrato/:uuid" element={<ContratoId />} />
         <Route path="/addContrato" element={<AddContrato />} />
 
         {/* categorias */}
