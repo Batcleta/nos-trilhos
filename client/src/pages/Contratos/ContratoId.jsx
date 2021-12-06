@@ -3,17 +3,30 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import Api from "../../helpers/BaseApi";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import convertDate from "../../componentes/funcionals/convertDate";
 
 function ContratoId() {
   const { uuid } = useParams();
   const [contrato, setContrato] = useState({});
   const [categorias, setCategorias] = useState([]);
-
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const sortByDate = (contas) => {
+    if (contas) {
+      contas.sort(function (a, b) {
+        var dateA = new Date(a.vencimentoDaConta),
+          dateB = new Date(b.vencimentoDaConta);
+        return dateA - dateB;
+      });
+    }
+  };
+
+  sortByDate(contrato.contas);
 
   useEffect(() => {
     (async () => {
@@ -47,14 +60,41 @@ function ContratoId() {
       origem: "normal",
     };
 
-    console.log(formData);
+    Api.put("/contratos/contas", contrato.contas, {
+      headers: {
+        apiKey: localStorage.getItem("apiKey"),
+      },
+    }).then((resp) => {
+      if (resp.data.message) {
+        alert("Alterado com sucesso");
+        navigate("/contratos");
+      } else {
+        alert("deu ruim filhão");
+      }
+    });
   };
-
+  // Converte a data para o padrão do input
   const getDate = (data) => {
     const date = new Date(data);
     return `${date.getFullYear()}-${date.getMonth() <= 9 ? "0" : ""}${
       date.getMonth() + 1
     }-${date.getDate()}`;
+  };
+
+  // Da baixa ou reativa uma conta
+  const baixaDeConta = (conta, status) => {
+    // const data = { ...conta, statusDaConta: !status };
+    // Api.put("/contratos/contas", data, {
+    //   headers: {
+    //     apiKey: localStorage.getItem("apiKey"),
+    //   },
+    // }).then((resp) => {
+    const updated = contrato.contas.filter(
+      (item) => item.uuid === conta.uuid
+    )[0];
+    updated.statusDaConta = !status;
+    setContrato({ ...contrato, ...contrato.contas, updated });
+    // });
   };
 
   return (
@@ -147,7 +187,66 @@ function ContratoId() {
               )}
             </FormGroup>
 
-            <button type="submit">Enviar</button>
+            <FormGroup>
+              <label htmlFor="">Origem do contrato:</label>
+              <input
+                defaultValue={contrato?.origem}
+                {...register("origem", { required: true })}
+              />
+              {errors.origem && (
+                <span>Por favor, informe a origem do contrato</span>
+              )}
+            </FormGroup>
+
+            <hr />
+
+            <div>
+              <div
+                style={{
+                  display: "grid",
+                  gap: "1rem",
+                  gridTemplateColumns: "repeat(5, 1fr)",
+                  fontWeight: "bold",
+                }}
+              >
+                <div>Data de vencimento</div>
+                <div>Observações</div>
+                <div>Valor da conta</div>
+                <div>Status</div>
+              </div>
+              {contrato.contas.map((item, key) => (
+                <div
+                  key={key}
+                  style={{
+                    display: "grid",
+                    gap: "1rem",
+                    gridTemplateColumns: "repeat(5, 1fr)",
+                  }}
+                >
+                  <div>{convertDate(item.vencimentoDaConta)}</div>
+                  <div>{item.observacoesDaConta}</div>
+                  <div>{item.valorDaConta}</div>
+                  <div>{item.statusDaConta ? "ativa" : "Baixada"}</div>
+                  {item.statusDaConta ? (
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={() => baixaDeConta(item, item.statusDaConta)}
+                    >
+                      Baixar conta
+                    </div>
+                  ) : (
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={() => baixaDeConta(item, item.statusDaConta)}
+                    >
+                      Reativar conta
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <button type="submit">Salvar</button>
           </form>
 
           <Link to="/categorias">voltar</Link>

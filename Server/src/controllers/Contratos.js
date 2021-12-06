@@ -73,6 +73,7 @@ module.exports = {
 
   async findAll(req, res) {
     Contratos.findAll({
+      order: [["descricaoDoContrato"], ["contas", "vencimentoDaConta", "asc"]],
       include: ["categoria", "contas"],
     }).then((resp) => res.json(resp));
   },
@@ -95,5 +96,25 @@ module.exports = {
         res.json({ error: "Id incorreto ou conta inexistente" });
       }
     });
+  },
+
+  // contas
+  async updateConta(req, res) {
+    const contas = req.body;
+    const promisse = contas.map(async (item) => {
+      await Contas.update(item, {
+        where: {
+          uuid: item.uuid,
+        },
+      });
+    });
+
+    const teste = await Promise.all(promisse);
+
+    if (teste.length > 0) {
+      res.json({ message: "ok" });
+    } else {
+      res.jeon({ error: "deu ruim " });
+    }
   },
 };
