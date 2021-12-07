@@ -5,14 +5,19 @@ import Dashboard from "./pages/Dashboard";
 import AddCategorias from "./pages/Categorias/AddCategorias";
 import Categorias from "./pages/Categorias";
 import CategoriaId from "./pages/Categorias/CategoriaId";
+
 import Contratos from "./pages/Contratos";
 import AddContrato from "./pages/Contratos/AddContrato";
 import ContratoId from "./pages/Contratos/ContratoId";
+
 import LoginPage from "./pages/Login";
 import NovoUsuário from "./pages/NovoUsuário";
+
+import CardsList from "./pages/Cards";
 // helpers
 import Api from "./helpers/BaseApi";
 import { useAuth } from "./helpers/MainContext";
+import AddCards from "./pages/Cards/AddCards";
 
 function App() {
   const { authState, setAuthState } = useAuth();
@@ -65,6 +70,18 @@ function App() {
           <li>
             <Link to="/contratos">Contratos</Link>
           </li>
+          <li>
+            <Link to="/cardsList">Meus Cartões</Link>
+          </li>
+          <li>
+            <p
+              onClick={() => {
+                localStorage.removeItem("apiKey");
+              }}
+            >
+              Logout
+            </p>
+          </li>
         </ul>
       </nav>
       <Routes>
@@ -81,6 +98,10 @@ function App() {
         <Route path="/categorias" element={<Categorias />} />
         <Route path="/categoria/:uuid" element={<CategoriaId />} />
         <Route path="/addCategoria" element={<AddCategorias />} />
+
+        {/* Cartões */}
+        <Route path="/cardsList" element={<CardsList />} />
+        <Route path="/addCard" element={<AddCards />} />
       </Routes>
     </div>
   );

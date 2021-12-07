@@ -48,7 +48,7 @@ function Contratos() {
         <div>fidelidade</div>
       </div>
 
-      {contratos.map((item, key) => (
+      {contratos?.map((item, key) => (
         <div
           key={key}
           style={{

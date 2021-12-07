@@ -86,6 +86,22 @@ module.exports = {
     );
   },
 
+  async update(req, res) {
+    const { uuid } = req.params;
+
+    Contratos.update(req.body, {
+      where: {
+        uuid: uuid,
+      },
+    }).then((resp) => {
+      if (resp.length > 0) {
+        res.json({ message: "ok" });
+      } else {
+        res.json({ error: "deu ruim " });
+      }
+    });
+  },
+
   async delete(req, res) {
     const { id } = req.params;
 

@@ -61,7 +61,7 @@ function Categorias() {
           <div>Status</div>
         </div>
 
-        {categorias.map((item, key) => (
+        {categorias?.map((item, key) => (
           <div
             key={key}
             style={{

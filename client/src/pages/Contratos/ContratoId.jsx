@@ -8,6 +8,7 @@ import convertDate from "../../componentes/funcionals/convertDate";
 function ContratoId() {
   const { uuid } = useParams();
   const [contrato, setContrato] = useState({});
+  const [contasList, setContasList] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const navigate = useNavigate();
   const {
@@ -16,7 +17,7 @@ function ContratoId() {
     formState: { errors },
   } = useForm();
 
-  const sortByDate = (contas) => {
+  ((contas) => {
     if (contas) {
       contas.sort(function (a, b) {
         var dateA = new Date(a.vencimentoDaConta),
@@ -24,9 +25,7 @@ function ContratoId() {
         return dateA - dateB;
       });
     }
-  };
-
-  sortByDate(contrato.contas);
+  })(contrato.contas);
 
   useEffect(() => {
     (async () => {
@@ -36,6 +35,7 @@ function ContratoId() {
         },
       }).then((resp) => {
         setContrato(resp.data);
+        resp.data.contas.forEach((item) => setContasList(item));
       });
     })();
 
@@ -48,7 +48,7 @@ function ContratoId() {
     })();
   }, []);
 
-  const onUpdate = (data) => {
+  const onUpdate = async (data) => {
     const formData = {
       ...data,
       VencimentoDaFatura: parseInt(data.VencimentoDaFatura),
@@ -60,26 +60,49 @@ function ContratoId() {
       origem: "normal",
     };
 
-    Api.put("/contratos/contas", contrato.contas, {
-      headers: {
-        apiKey: localStorage.getItem("apiKey"),
-      },
-    }).then((resp) => {
-      if (resp.data.message) {
-        alert("Alterado com sucesso");
-        navigate("/contratos");
-      } else {
-        alert("deu ruim filhão");
-      }
-    });
+    const { contas, categoria, userId, uuid, updatedAt, createdAt, ...rest } =
+      contrato;
+
+    if (JSON.stringify(rest) !== JSON.stringify(formData)) {
+      await Api.put(`/contratos/update/${uuid}`, formData, {
+        headers: {
+          apiKey: localStorage.getItem("apiKey"),
+        },
+      }).then((resp) => {
+        console.log(resp);
+        // if (resp.data.message) {
+        //   // allClear.contratosUpdate = true;
+        // } else {
+        //   allClear.contratosUpdate = false;
+        // }
+      });
+    }
+
+    // await Api.put("/contratos/contas", contrato.contas, {
+    //   headers: {
+    //     apiKey: localStorage.getItem("apiKey"),
+    //   },
+    // }).then((resp) => {
+    //   if (resp.data.message) {
+    //     allClear.contasUpdate = true;
+    //   } else {
+    //     allClear.contasUpdate = false;
+    //   }
+    // });
+
+    // console.log(allClear);
   };
+
   // Converte a data para o padrão do input
   const getDate = (data) => {
     const date = new Date(data);
     return `${date.getFullYear()}-${date.getMonth() <= 9 ? "0" : ""}${
       date.getMonth() + 1
-    }-${date.getDate()}`;
+    }-${date.getDate() <= 9 ? "0" : ""}${date.getDate() + 1} `;
   };
+  const inicioDoContrato = getDate(contrato?.inicioDoContrato);
+  console.log(inicioDoContrato.toString());
+  console.log("2021-09-07");
 
   // Da baixa ou reativa uma conta
   const baixaDeConta = (conta, status) => {
@@ -117,7 +140,7 @@ function ContratoId() {
               <label htmlFor="">Inicio do contrato</label>
               <input
                 type="date"
-                defaultValue={getDate(contrato?.inicioDoContrato)}
+                defaultValue={getDate()}
                 {...register("inicioDoContrato")}
               />
             </FormGroup>
