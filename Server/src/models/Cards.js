@@ -25,5 +25,13 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
+  Cards.associate = ({ Compras }) => {
+    Cards.hasMany(Compras, {
+      as: "compras",
+      onDelete: "cascade",
+      foreignKey: "cardUuid",
+    });
+  };
+
   return Cards;
 };

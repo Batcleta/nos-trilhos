@@ -12,9 +12,19 @@ module.exports = {
     Cards.findAll().then((resp) => res.json(resp));
   },
 
-  async findOne(req, res) {},
+  async findOne(req, res) {
+    Cards.findByPk(req.params.uuid).then((resp) => {
+      res.json(resp);
+    });
+  },
 
-  async update(req, res) {},
+  async update(req, res) {
+    Cards.update(req.body, {
+      where: {
+        uuid: req.params.uuid,
+      },
+    }).then((resp) => res.json(resp));
+  },
 
   async delete(req, res) {},
 };

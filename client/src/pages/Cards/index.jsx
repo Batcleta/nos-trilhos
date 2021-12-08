@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import Api from "../../helpers/BaseApi";
 import convertDate from "../../componentes/funcionals/convertDate";
 
 function CardsList() {
   const [cards, setCards] = useState([]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   useEffect(() => {
     Api.get("/cards", {
       headers: {
@@ -14,6 +21,8 @@ function CardsList() {
       setCards(resp.data);
     });
   }, []);
+
+  const onDelete = () => {};
 
   return (
     <div>
@@ -48,6 +57,14 @@ function CardsList() {
             <div>{`*** ${item.cardNumber.slice(-4)}`}</div>
             <div>{convertDate(item.expireDate)}</div>
             <div>{item.statusDoCartão ? "Ativo" : "Inativo"}</div>
+            <div style={{ gap: "1rem", display: "flex " }}>
+              <Link to={`/cardId/${item.uuid}`}>
+                <i className="uil uil-edit"></i>
+              </Link>
+              <a onClick={(e) => onDelete(item.uuid, e)}>
+                <i className="uil uil-trash-alt"></i>
+              </a>
+            </div>
           </div>
         ))}
       </div>

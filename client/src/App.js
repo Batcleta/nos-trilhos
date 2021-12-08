@@ -2,22 +2,28 @@ import React, { useEffect } from "react";
 import { Route, Routes, Link, useNavigate, useParams } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 // Pages
-import AddCategorias from "./pages/Categorias/AddCategorias";
+import LoginPage from "./pages/Login";
+import NovoUsuário from "./pages/NovoUsuário";
+
 import Categorias from "./pages/Categorias";
+import AddCategorias from "./pages/Categorias/AddCategorias";
 import CategoriaId from "./pages/Categorias/CategoriaId";
 
 import Contratos from "./pages/Contratos";
 import AddContrato from "./pages/Contratos/AddContrato";
 import ContratoId from "./pages/Contratos/ContratoId";
 
-import LoginPage from "./pages/Login";
-import NovoUsuário from "./pages/NovoUsuário";
-
 import CardsList from "./pages/Cards";
+import AddCards from "./pages/Cards/AddCards";
+import CardId from "./pages/Cards/CardId";
+
+import ComprasList from "./pages/Compras";
+import AddCompras from "./pages/Compras/AddCompras";
+import ComprasId from "./pages/Compras/ComprasId";
+
 // helpers
 import Api from "./helpers/BaseApi";
 import { useAuth } from "./helpers/MainContext";
-import AddCards from "./pages/Cards/AddCards";
 
 function App() {
   const { authState, setAuthState } = useAuth();
@@ -74,9 +80,19 @@ function App() {
             <Link to="/cardsList">Meus Cartões</Link>
           </li>
           <li>
+            <Link to="/comprasList">Minhas Compras</Link>
+          </li>
+          <li>
             <p
               onClick={() => {
                 localStorage.removeItem("apiKey");
+                setAuthState({
+                  username: "",
+                  id: 0,
+                  authorization: "",
+                  status: false,
+                });
+                navigate("/");
               }}
             >
               Logout
@@ -102,6 +118,12 @@ function App() {
         {/* Cartões */}
         <Route path="/cardsList" element={<CardsList />} />
         <Route path="/addCard" element={<AddCards />} />
+        <Route path="/cardId/:uuid" element={<CardId />} />
+
+        {/* Compras */}
+        <Route path="/comprasList" element={<ComprasList />} />
+        <Route path="/addCompra" element={<AddCompras />} />
+        <Route path="/CompraId/:uuid" element={<ComprasId />} />
       </Routes>
     </div>
   );

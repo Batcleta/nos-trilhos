@@ -8,7 +8,7 @@ const CardController = require("../controllers/Cards");
 router.post("/", validateToken, CardController.store);
 router.get("/", validateToken, CardController.findAll);
 router.get("/:uuid", validateToken, CardController.findOne);
-router.put("/:uuid", validateToken, CardController.update);
+router.put("/update/:uuid", validateToken, CardController.update);
 router.delete("/delete/:uuid", validateToken, CardController.delete);
 
 module.exports = router;
