@@ -1,5 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
   const RendaVariavel = sequelize.define("RendaVariavel", {
+    uuid: {
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      unique: true,
+    },
     dataDeRecebimento: {
       type: DataTypes.DATE,
       allowNull: false,

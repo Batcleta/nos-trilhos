@@ -1,5 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
   const RendaMensal = sequelize.define("RendaMensal", {
+    uuid: {
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      unique: true,
+    },
     dataDeRecebimentoMensal: {
       type: DataTypes.DATE,
       allowNull: false,

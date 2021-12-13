@@ -1,10 +1,21 @@
 module.exports = (sequelize, DataTypes) => {
   const Compras = sequelize.define("Compras", {
-    dataCompra: {
-      type: DataTypes.DATE,
+    uuid: {
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      unique: true,
+    },
+    dataDaCompra: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    descriçãoCompra: {
+    descricaoDaCompra: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    nomeDoEstabelecimento: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -12,9 +23,21 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DOUBLE,
       allowNull: false,
     },
-    possuiParcelamento: {
+    observacoes: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    tipoDePagamento: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    metodoDePagamento: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    numeroDeParcelas: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
     status: {
       type: DataTypes.BOOLEAN,

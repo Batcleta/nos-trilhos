@@ -16,9 +16,18 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     expireDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false,
     },
+    fechamentoFatura: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    vencimentoFatura: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
     statusDoCartão: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

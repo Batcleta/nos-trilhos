@@ -5,40 +5,45 @@ import { Link, useNavigate } from "react-router-dom";
 import Api from "../../helpers/BaseApi";
 
 function AddCompras() {
-  const [categorias, setCategorias] = useState([]);
-
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
 
+  const [categorias, setCategorias] = useState([]);
+  const [cartoes, setCartoes] = useState([]);
+  const watchMetodosDePagamento = watch("metodoPagamento");
+  const watchPagamentoAPrazo = watch("aPrazo");
+  const watchParcelamento = watch("possuiParcelamento");
+
   useEffect(() => {
-    Api.get("categorias", {
-      headers: {
-        apiKey: localStorage.getItem("apiKey"),
-      },
-    }).then((resp) => setCategorias(resp.data));
+    (() =>
+      Api.get("categorias", {
+        headers: {
+          apiKey: localStorage.getItem("apiKey"),
+        },
+      }).then((resp) => setCategorias(resp.data)))();
+
+    (() =>
+      Api.get("cards", {
+        headers: {
+          apiKey: localStorage.getItem("apiKey"),
+        },
+      }).then((resp) => setCartoes(resp.data)))();
   }, []);
 
   const navigate = useNavigate();
 
   const onSubmit = (data) => {
-    const formData = {
-      ...data,
-      VencimentoDaFatura: parseInt(data.VencimentoDaFatura),
-      mesesDeFidelidade: parseInt(data.mesesDeFidelidade),
-      //   categoriaContrato: parseInt(data.categoriaContrato),
-      valorDoContrato: parseFloat(data.valorDoContrato.replace(",", ".")),
-      origem: "normal",
-    };
+    const formData = {};
 
-    Api.post("/contratos", formData, {
-      headers: {
-        apiKey: localStorage.getItem("apiKey"),
-      },
-    }).then(console.log);
-    // }).then((resp) => navigate("/contratos"));
+    if (data.metodoPagamento === "a vista") {
+    } else {
+    }
+
+    // enviar formData
   };
 
   return (
@@ -46,74 +51,130 @@ function AddCompras() {
       {categorias.length > 0 ? (
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
-            <label htmlFor="">Data de inicio do contrato (Opcional)</label>
-            <input type="date" {...register("inicioDoContrato")} />
-          </FormGroup>
-
-          <FormGroup>
-            <label htmlFor="">Dia de vencimento da fatura</label>
+            <label htmlFor="">Data da compra</label>
             <input
-              type="number"
-              {...register("VencimentoDaFatura", { required: true })}
+              placeholder="Ex: data da compra"
+              {...register("dataCompra", { required: true })}
             />
-            {errors.VencimentoDaFatura && (
-              <span>Informe o dia de vencimento da sua fatura</span>
-            )}
+            {errors.dataCompra && <span>Data da compra</span>}
           </FormGroup>
 
           <FormGroup>
-            <label htmlFor="">Descrição da fatura</label>
+            <label htmlFor="">Descrição da compra</label>
             <input
               type="text"
               placeholder="Ex: Internet, Plano de celular.."
-              {...register("descricaoDoContrato", { required: true })}
+              {...register("descriçãoCompra", { required: true })}
             />
-            {errors.descricaoDoContrato && (
-              <span>Escreva uma breve descrição</span>
-            )}
+            {errors.descriçãoCompra && <span>Escreva uma breve descrição</span>}
           </FormGroup>
 
           <FormGroup>
-            <label htmlFor="">Valor mensal do contrato</label>
+            <label htmlFor="">Total da compra</label>
             <input
               placeholder="Apenas números. Ex: 109,90"
-              {...register("valorDoContrato", { required: true })}
+              {...register("totalCompra", { required: true })}
             />
-            {errors.valorDoContrato && (
-              <span>Informe o valor do seu contrato</span>
+            {errors.totalCompra && <span>Informe o total da compra</span>}
+          </FormGroup>
+
+          <FormGroup>
+            <label htmlFor="">Método utilizado</label>
+            <select {...register("metodoPagamento", { required: true })}>
+              <option value="">Escolha</option>
+              <option value="a vista">A vista</option>
+              <option value="a prazo">A prazo</option>
+            </select>
+            {errors.metodoPagamento && (
+              <span>Informe um método de pagamento</span>
             )}
           </FormGroup>
 
-          <FormGroup>
-            <label htmlFor="">Possui fidelidade? </label>
-            <select {...register("mesesDeFidelidade")}>
-              <option>Não possui</option>
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-              <option>6</option>
-              <option>7</option>
-              <option>8</option>
-              <option>9</option>
-              <option>10</option>
-              <option>11</option>
-              <option>12</option>
-            </select>
-          </FormGroup>
+          {watchMetodosDePagamento === "a vista" && (
+            <FormGroup>
+              <label htmlFor="">Pagamento à vista</label>
+              <select {...register("aVista", { required: true })}>
+                <option value="">Escolha</option>
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Boleto a vista">Boleto á vista</option>
+                <option value="débito">Débito</option>
+                <option value="Pix">Pix</option>
+              </select>
+              {errors.aVista && <span>Informe um método de pagamento</span>}
+            </FormGroup>
+          )}
+
+          {watchMetodosDePagamento === "a prazo" && (
+            <>
+              <FormGroup>
+                <label htmlFor="">Formas de pagamento</label>
+                <select {...register("aPrazo", { required: true })}>
+                  <option value="">Escolha</option>
+                  <option value="Boleto a prazo">Boleto á prazo</option>
+                  <option value="Cartão de crédito">Cartão de crédito</option>
+                </select>
+                {errors.aPrazo && <span>Informe um método de pagamento</span>}
+              </FormGroup>
+
+              {watchPagamentoAPrazo === "Boleto a prazo" && (
+                <FormGroup>
+                  <label htmlFor="">(opcional) Numero do documento</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Internet, Plano de celular.."
+                    {...register("docNumber")}
+                  />
+                </FormGroup>
+              )}
+
+              {watchPagamentoAPrazo === "Cartão de crédito" && (
+                <FormGroup>
+                  <label htmlFor="">Escolha um cartão cadastrado</label>
+                  <select
+                    placeholder="Apenas números. Ex: 109,90"
+                    {...register("cardUuid")}
+                  >
+                    {cartoes.map((item, key) => (
+                      <option key={key} value={item.uuid}>
+                        {`${item.cardNickname} - ${item.cardNumber.slice(-4)}`}
+                      </option>
+                    ))}
+                  </select>
+                  <Link to="/cardsList">cadastre um novo cartão</Link>
+                </FormGroup>
+              )}
+
+              <FormGroup>
+                <label htmlFor="">Compra parcelada?</label>
+                <select
+                  defaultValue={"1"}
+                  placeholder="Apenas números. Ex: 109,90"
+                  {...register("possuiParcelamento", { required: true })}
+                >
+                  <option value="">Escolha</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </FormGroup>
+
+              {watchParcelamento === "Sim" && (
+                <FormGroup>
+                  <label htmlFor="">Numero de parcelas </label>
+                  <input
+                    defaultValue={"1"}
+                    placeholder="Apenas números. Ex: 109,90"
+                    {...register("numeroDeParcelas", { required: true })}
+                  />
+                  {errors.numeroDeParcelas && (
+                    <span>Informe o numero das parcelas</span>
+                  )}
+                </FormGroup>
+              )}
+            </>
+          )}
 
           <FormGroup>
-            <label htmlFor="">Status do contrato </label>
-            <select {...register("statusDoContrato")}>
-              <option>Ativo</option>
-              <option>Inativo</option>
-              <option>Em espera</option>
-            </select>
-          </FormGroup>
-
-          <FormGroup>
-            <label htmlFor="">Categoria do contrato</label>
+            <label htmlFor="">Categoria da compra </label>
             <select {...register("categoriaContrato")}>
               {categorias.map((item, key) => (
                 <option key={key} value={item.uuid}>
@@ -126,7 +187,7 @@ function AddCompras() {
           <button type="submit">Enviar</button>
         </form>
       ) : (
-        "Loading..."
+        "Modal: é necessário cadastrar ua categoria para criação de compras <ir para categorias>"
       )}
 
       <Link to="/contratos">voltar</Link>
