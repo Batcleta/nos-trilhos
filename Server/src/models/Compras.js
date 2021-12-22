@@ -17,23 +17,27 @@ module.exports = (sequelize, DataTypes) => {
     },
     nomeDoEstabelecimento: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
-    totalCompra: {
+    totalDaCompra: {
       type: DataTypes.DOUBLE,
       allowNull: false,
     },
     observacoes: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     tipoDePagamento: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    metodoDePagamento: {
+    formaDePagamento: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    docNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     numeroDeParcelas: {
       type: DataTypes.INTEGER,
@@ -45,18 +49,25 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
-  Compras.associate = ({ Parcelas, Categorias, Users }) => {
+  Compras.associate = ({ Parcelas, Categorias, Users, Cards }) => {
     Compras.hasMany(Parcelas, {
       as: "parcelas",
       onDelete: "cascade",
-      foreignKey: "compraId",
+      foreignKey: "compraUuid",
     });
 
     Compras.belongsToMany(Categorias, {
       as: "categoria",
       onDelete: "cascade",
-      foreignKey: "compraId",
+      foreignKey: "compraUuid",
       through: "categoriaDaCompra",
+    });
+
+    Compras.belongsToMany(Cards, {
+      as: "cards",
+      onDelete: "cascade",
+      foreignKey: "compraUuid",
+      through: "CardDaCompra",
     });
 
     Compras.belongsTo(Users, { as: "user" });

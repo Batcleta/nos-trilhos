@@ -14,8 +14,8 @@ function AddCompras() {
 
   const [categorias, setCategorias] = useState([]);
   const [cartoes, setCartoes] = useState([]);
-  const watchTipoDePagamento = watch("tipoPagamento");
-  const watchFormaDePagamento = watch("formaPagamento");
+  const watchTipoDePagamento = watch("tipoDePagamento");
+  const watchFormaDePagamento = watch("formaDePagamento");
   const watchParcelamento = watch("possuiParcelamento");
 
   useEffect(() => {
@@ -39,13 +39,13 @@ function AddCompras() {
   const onSubmit = (data) => {
     let newData;
 
-    if (data.tipoPagamento !== "a vista") {
+    if (data.tipoDePagamento !== "a vista") {
       const { ...rest } = data;
       newData = rest;
     } else {
       const { possuiParcelamento, numeroDeParcelas, ...rest } = data;
 
-      if (data.formaPagamento === "Dinheiro") {
+      if (data.formaDePagamento === "Dinheiro") {
         const { docNumber, ...all } = rest;
         newData = all;
       } else {
@@ -53,21 +53,37 @@ function AddCompras() {
       }
     }
 
-    const toDate = data.dataCompra.split("/");
-    newData.dataCompra = new Date(`${toDate[2]}/${toDate[1]}/${toDate[0]}`);
-    console.log(newData);
+    const toDate = data.dataDaCompra.split("/");
+    newData.dataDaCompra = new Date(`${toDate[2]}/${toDate[1]}/${toDate[0]}`);
+    newData.numeroDeParcelas =
+      data.possuiParcelamento === undefined ||
+      data.possuiParcelamento === null ||
+      data.possuiParcelamento === "Não"
+        ? 1
+        : data.numeroDeParcelas;
+
+    newData.status = true;
+    newData.totalDaCompra = parseFloat(data.totalDaCompra.replace(",", "."));
+    Api.post("/compras", newData, {
+      headers: {
+        apiKey: localStorage.getItem("apiKey"),
+      },
+    })
+      .then((resp) => console.log(resp))
+      .catch((err) => alert(err));
   };
 
   return (
     <div>
+      <h3>Nova compra</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup>
           <label htmlFor="">Data da compra</label>
           <input
             placeholder="Ex: data da compra"
-            {...register("dataCompra", { required: true })}
+            {...register("dataDaCompra", { required: true })}
           />
-          {errors.dataCompra && <span>Data da compra</span>}
+          {errors.dataDaCompra && <span>Data da compra</span>}
         </FormGroup>
 
         <FormGroup>
@@ -75,44 +91,52 @@ function AddCompras() {
           <input
             type="text"
             placeholder="Ex: Internet, Plano de celular.."
-            {...register("descriçãoCompra", { required: true })}
+            {...register("descricaoDaCompra", { required: true })}
           />
-          {errors.descriçãoCompra && <span>Escreva uma breve descrição</span>}
+          {errors.descricaoDaCompra && <span>Escreva uma breve descrição</span>}
+        </FormGroup>
+
+        <FormGroup>
+          <label htmlFor="">(Opcional) Nome do estabelecimento</label>
+          <input
+            placeholder="Apenas números. Ex: 109,90"
+            {...register("nomeDoEstabelecimento")}
+          />
         </FormGroup>
 
         <FormGroup>
           <label htmlFor="">Total da compra</label>
           <input
             placeholder="Apenas números. Ex: 109,90"
-            {...register("totalCompra", { required: true })}
+            {...register("totalDaCompra", { required: true })}
           />
-          {errors.totalCompra && <span>Informe o total da compra</span>}
+          {errors.totalDaCompra && <span>Informe o total da compra</span>}
         </FormGroup>
 
         <FormGroup>
           <label htmlFor="">Método utilizado</label>
-          <select {...register("tipoPagamento", { required: true })}>
+          <select {...register("tipoDePagamento", { required: true })}>
             <option value="">Escolha</option>
             <option value="a vista">A vista</option>
             <option value="a prazo">A prazo</option>
           </select>
-          {errors.metodoPagamento && (
-            <span>Informe um método de pagamento</span>
-          )}
+          {errors.tipoDePagamento && <span>Informe um tipo de pagamento</span>}
         </FormGroup>
 
         {watchTipoDePagamento === "a vista" && (
           <>
             <FormGroup>
               <label htmlFor="">Pagamento à vista</label>
-              <select {...register("formaPagamento", { required: true })}>
+              <select {...register("formaDePagamento", { required: true })}>
                 <option value="">Escolha</option>
                 <option value="Dinheiro">Dinheiro</option>
                 <option value="Boleto a vista">Boleto á vista</option>
                 <option value="débito">Débito</option>
                 <option value="Pix">Pix</option>
               </select>
-              {errors.aVista && <span>Informe um método de pagamento</span>}
+              {errors.formaDePagamento && (
+                <span>Informe um método de pagamento</span>
+              )}
             </FormGroup>
 
             {watchFormaDePagamento === "Boleto a vista" && (
@@ -121,7 +145,6 @@ function AddCompras() {
                 <input
                   type="text"
                   placeholder="Ex: Internet, Plano de celular.."
-                  defaultValue={"ds"}
                   {...register("docNumber")}
                 />
               </FormGroup>
@@ -167,12 +190,14 @@ function AddCompras() {
           <>
             <FormGroup>
               <label htmlFor="">Formas de pagamento</label>
-              <select {...register("formaPagamento", { required: true })}>
+              <select {...register("formaDePagamento", { required: true })}>
                 <option value="">Escolha</option>
                 <option value="Boleto a prazo">Boleto á prazo</option>
                 <option value="Cartão de crédito">Cartão de crédito</option>
               </select>
-              {errors.aPrazo && <span>Informe um método de pagamento</span>}
+              {errors.formaDePagamento && (
+                <span>Informe um método de pagamento</span>
+              )}
             </FormGroup>
 
             {watchFormaDePagamento === "Boleto a prazo" && (
@@ -214,7 +239,7 @@ function AddCompras() {
               <select
                 defaultValue={"1"}
                 placeholder="Apenas números. Ex: 109,90"
-                {...register("possuiParcelamento", { required: true })}
+                {...register("possuiParcelamento")}
               >
                 <option value="">Escolha</option>
                 <option value="Sim">Sim</option>
@@ -240,7 +265,7 @@ function AddCompras() {
 
         <FormGroup>
           <label htmlFor="">Categoria da compra </label>
-          <select {...register("categoriaContrato", { required: true })}>
+          <select {...register("categoriaCompra", { required: true })}>
             {categorias.map((item, key) => (
               <option key={key} value={item.uuid}>
                 {item.nomeCategoria}
@@ -248,13 +273,18 @@ function AddCompras() {
             ))}
           </select>
           <Link to="/addCategoria">cadastre uma categoria</Link>
-          {errors.categoriaContrato && <span>Informe uma categoria</span>}
+          {errors.categoriaCompra && <span>Informe uma categoria</span>}
+        </FormGroup>
+
+        <FormGroup>
+          <label htmlFor="">Observações</label>
+          <input type="text" {...register("observacoes")} />
         </FormGroup>
 
         <button type="submit">Enviar</button>
       </form>
 
-      <Link to="/contratos">voltar</Link>
+      <Link to="/comprasList">voltar</Link>
     </div>
   );
 }

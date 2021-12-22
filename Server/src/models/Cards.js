@@ -39,10 +39,11 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Cards.associate = ({ Compras }) => {
-    Cards.hasMany(Compras, {
+    Cards.belongsToMany(Compras, {
       as: "compras",
       onDelete: "cascade",
       foreignKey: "cardUuid",
+      through: "CardDaCompra",
     });
   };
 

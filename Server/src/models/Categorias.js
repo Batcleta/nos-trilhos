@@ -33,28 +33,28 @@ module.exports = (sequelize, DataTypes) => {
     Categorias.belongsToMany(Compras, {
       as: "compras",
       onDelete: "cascade",
-      foreignKey: "categoriaId",
+      foreignKey: "categoriaUuid",
       through: "categoriaDaCompra",
     });
 
     Categorias.belongsToMany(Contratos, {
       as: "contratos",
       onDelete: "cascade",
-      foreignKey: "categoriaId",
+      foreignKey: "categoriaUuid",
       through: "categoriaDoContrato",
     });
 
     Categorias.belongsToMany(RendaFixa, {
       as: "rendafixa",
       onDelete: "cascade",
-      foreignKey: "categoriaId",
+      foreignKey: "categoriaUuid",
       through: "categoriaDaRendaFixa",
     });
 
     Categorias.belongsToMany(RendaVariavel, {
       as: "rendavariavel",
       onDelete: "cascade",
-      foreignKey: "categoriaId",
+      foreignKey: "categoriaUuid",
       through: "categoriaDaRendaVariável",
     });
   };
