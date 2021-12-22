@@ -11,12 +11,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    tipoCartao: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     cardNumber: {
       type: DataTypes.STRING,
       allowNull: true,
     },
     expireDate: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     fechamentoFatura: {

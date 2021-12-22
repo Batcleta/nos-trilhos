@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
     },
     dataDaCompra: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     descricaoDaCompra: {

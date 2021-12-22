@@ -18,7 +18,7 @@ module.exports = {
   async findAll(req, res) {
     Users.findAll({
       attributes: {
-        exclude: ["id", "password", "authorization", "createdAt", "updatedAt"],
+        exclude: ["id", "createdAt", "updatedAt"],
       },
       include: [
         {

@@ -1,11 +1,17 @@
 const Parcelamento = require("../middlewares/Parcelamento");
-const { Categorias, Compras, Parcelas } = require("../models");
+const { Categorias, Compras, Parcelas, Cards } = require("../models");
 
 module.exports = {
   async store(req, res) {
-    const { categoria, possuiParcelamento, totalCompra, dataCompra } = req.body;
+    const {
+      categoriaCompra,
+      possuiParcelamento,
+      totalCompra,
+      dataCompra,
+      docNumber,
+    } = req.body;
 
-    const findCategoria = await Categorias.findByPk(categoria);
+    const findCategoria = await Categorias.findByPk(categoriaCompra);
     if (!findCategoria) {
       res.json({ error: "Categoria não encontrada" });
     } else {
@@ -16,26 +22,33 @@ module.exports = {
 
       await findCategoria.addCompras(compras);
 
-      if (possuiParcelamento) {
-        const dadosParcelamento = Parcelamento(
-          totalCompra,
-          possuiParcelamento,
-          15,
-          10,
-          dataCompra
-        );
+      if (req.body.formaPagamento === "Cartão de crédito") {
+        const findCard = await Cards.findByPk(docNumber);
 
-        await dadosParcelamento.forEach((element) => {
-          Parcelas.create({ ...element, compraId: compras.id });
+        if (!findCard) {
+          res.json({ error: "Cartão não encontrado" });
+        }
+        if (possuiParcelamento) {
+          const dadosParcelamento = Parcelamento(
+            totalCompra,
+            possuiParcelamento,
+            findCard.vencimentoFatura || 15,
+            findCard.fechamentoFatura || 10,
+            dataCompra
+          );
+
+          await dadosParcelamento.forEach((element) => {
+            Parcelas.create({ ...element, compraId: compras.id });
+          });
+        }
+
+        const result = await Compras.findOne({
+          where: { descriçãoCompra: req.body.descriçãoCompra },
+          include: [{ association: "categoria" }, { association: "parcelas" }],
         });
+
+        res.json(result);
       }
-
-      const result = await Compras.findOne({
-        where: { descriçãoCompra: req.body.descriçãoCompra },
-        include: [{ association: "categoria" }, { association: "parcelas" }],
-      });
-
-      res.json(result);
     }
   },
 

@@ -2,10 +2,9 @@ const { Cards } = require("../models");
 
 module.exports = {
   async store(req, res) {
-    const date = new Date(`01/${req.body.expireDate}`);
-    Cards.create({ ...req.body, statusDoCartão: true, expireDate: date }).then(
-      (resp) => res.json(resp)
-    );
+    Cards.create({ ...req.body })
+      .then((resp) => res.json(resp))
+      .catch((err) => res.send(err));
   },
 
   async findAll(req, res) {

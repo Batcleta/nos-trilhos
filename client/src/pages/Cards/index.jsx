@@ -26,6 +26,7 @@ function CardsList() {
 
   return (
     <div>
+      <h2>Meus Cartões</h2>
       <div>
         <Link to="/addCard">Adicionar cartão</Link>
       </div>
@@ -34,13 +35,16 @@ function CardsList() {
         style={{
           display: "grid",
           gap: "1rem",
-          gridTemplateColumns: "repeat(5, 1fr)",
+          gridTemplateColumns: "repeat(8, 1fr)",
           fontWeight: "bold",
         }}
       >
         <div>Apelido do cartão</div>
-        <div>Cartão</div>
-        <div>Vencimento do cartão</div>
+        <div>Tipo do cartão</div>
+        <div>Número do Cartão</div>
+        <div>Data de expiração</div>
+        <div>Data de Fechamento</div>
+        <div>Data de vencimento</div>
         <div>Status do cartão</div>
       </div>
       <div>
@@ -49,13 +53,22 @@ function CardsList() {
             style={{
               display: "grid",
               gap: "1rem",
-              gridTemplateColumns: "repeat(5, 1fr)",
+              gridTemplateColumns: "repeat(8, 1fr)",
             }}
             key={key}
           >
             <div>{item.cardNickname}</div>
+            <div>
+              {item.tipoCartao === "1"
+                ? "Débito"
+                : item.tipoCartao === "2"
+                ? "Crédito"
+                : "Crédito e Débito"}
+            </div>
             <div>{`*** ${item.cardNumber.slice(-4)}`}</div>
             <div>{convertDate(item.expireDate)}</div>
+            <div>{`Dia ${item.fechamentoFatura}`}</div>
+            <div>{`Dia ${item.vencimentoFatura}`}</div>
             <div>{item.statusDoCartão ? "Ativo" : "Inativo"}</div>
             <div style={{ gap: "1rem", display: "flex " }}>
               <Link to={`/cardId/${item.uuid}`}>
